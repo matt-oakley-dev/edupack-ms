@@ -12,6 +12,9 @@ class AuthController extends Controller
 {
     /**
      * Register a user
+     *
+     * @param Request $request
+     * @version 1.0.0
      */
     public function register(Request $request) {
         $fields = $request->validate([
@@ -38,6 +41,9 @@ class AuthController extends Controller
 
     /**
      * Login a user
+     *
+     * @param Request $request
+     * @version 1.0.0
      */
     public function login(Request $request) {
         $fields = $request->validate([
@@ -55,7 +61,9 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
+        // Delete any previous tokens and create a new one.
+        auth()->user()->tokens()->delete();
+        $token = $user->createToken('edupacktoken')->plainTextToken;
 
         $response = [
             'user' => $user,
@@ -65,11 +73,31 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
+    /**
+     * Logout a user (Deletes all tokens)
+     *
+     * @param Request $request
+     * @version 1.0.0
+     */
     public function logout(Request $request) {
         auth()->user()->tokens()->delete();
 
         return [
             'message' => 'Logged OUt'
         ];
+    }
+
+    /**
+     * Deletes all users login tokens and creates a fresh one
+     * 
+     * @param Request $request
+     * @version 1.0.0
+     */
+    public function refresh(Request $request) {
+        $request->user()->tokens()->delete();
+
+        return response()->json([
+            'access_token' => $request->user()->createToken('api')->plainTextToken,
+        ]);
     }
 }

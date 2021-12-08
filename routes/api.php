@@ -20,9 +20,11 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
+    // A test function for tokens
     Route::get('authentication_test', function() {
         return 'Authenticated';
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
 });
