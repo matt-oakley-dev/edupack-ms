@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 
+/**
+ * The main Auth Controller
+ */
 class AuthController extends Controller
 {
     /**
@@ -62,7 +65,6 @@ class AuthController extends Controller
         }
 
         // Delete any previous tokens and create a new one.
-        auth()->user()->tokens()->delete();
         $token = $user->createToken('edupacktoken')->plainTextToken;
 
         $response = [
@@ -83,7 +85,7 @@ class AuthController extends Controller
         auth()->user()->tokens()->delete();
 
         return [
-            'message' => 'Logged OUt'
+            'message' => 'Logged Out'
         ];
     }
 
